@@ -1,0 +1,38 @@
+
+.whiteKey {
+  background: white;
+  width: 8%;
+  height: 30vw;
+  
+}
+
+.blackKey {
+  
+  vertical-align: top;
+  margin-left: -2%;
+  margin-right: -1%;
+  
+  
+  background: black;
+  width: 5%;
+
+  height: 20vw;
+}
+
+
+.whiteKey:active, .whiteKey.lit {
+  background: lightgrey;
+}
+
+.blackKey:active, .blackKey.lit {
+  background: grey;
+}
+
+
+/* attempt to make black keys overlap white keys */
+.whiteKey {
+  z-index: -10;
+}
+.blackKey {
+  z-index: 2;
+}
