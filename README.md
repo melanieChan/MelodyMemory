@@ -35,7 +35,7 @@ The following **optional** features are implemented:
 The following **additional** features are implemented:
 
 - [x] Button sizes are dynamic
-- [ ] User can navigate between 2 HTML pages
+- [x] User can navigate between 2 HTML pages
 
 ## Video Walkthrough
 
