@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Hello!</title>
+
+    <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/style.css" />
+    
+    
+    <!-- import for music -->    
+    
+    <link rel="stylesheet" href="/music.css" />
+    
+    <!-- Piano sound source -->
+    <script type="text/javascript" src="https://rawgit.com/keithwhor/audiosynth/master/audiosynth.js"></script>
+    
+    <script>
+      // global constants
+      const clueHoldTime = 1000; //how long each clue plays
+      // 1 k milliseconds = 1 second
+
+      const cluePauseTime = 33; //how long to pause in between clues
+      const nextClueWaitTime = 100; //how long to wait before starting playback of the clue sequence
+
+
+      var piano = Synth.createInstrument('piano');
+
+      function play(pitch) {
+        lightButton(pitch);
+        
+        piano.play(pitch, 4, 2);
+        
+        // clear out button after clueHoldTime passes
+        setTimeout(clearButton, 500, pitch);
+
+      }
+      
+      function lightButton(pitch) {
+        document.getElementById("pitch" + pitch).classList.add("lit");
+      }
+      function clearButton(pitch) {
+        document.getElementById("pitch" + pitch).classList.remove("lit");
+      }
+      
+      
+      var pattern = ['C', 'C', 'G', 'G', 'A', 'A', 'G'];
+      var progress = 0;     // number of tones / clues being played for a round
+      var gamePlaying = false;
+      
+      var guessCounter = 0;
+      
+      function startGame() {
+        progress = 0;
+        gamePlaying = true;
+
+        // hide start, show stop button
+        document.getElementById("startBtn").classList.add("hidden");
+        document.getElementById("stopBtn").classList.remove("hidden");
+
+        
+        playClueSequence();
+      }
+      function stopGame() {
+        gamePlaying = false;
+
+        // hide stop, show start button
+        document.getElementById("stopBtn").classList.add("hidden");
+        document.getElementById("startBtn").classList.remove("hidden");
+      }
+      
+      function playClueSequence() {
+        guessCounter = 0;  // will keep track of player's streak
+        
+        let delay = nextClueWaitTime;
+
+
+        for (let i = 0; i <= progress; i++) {
+          
+              // play a clue / button
+          setTimeout(play, delay, pattern[i]);
+
+          // time when next clue will play
+          delay += cluePauseTime; // play next tone after current tone with time in between the 2 tones
+
+          delay += clueHoldTime; // tone playing
+        }
+      }
+      
+      function loseGame() {
+        stopGame();
+        // alert("Sorry, you lost.");
+        setTimeout(alert, clueHoldTime, "Sorry, you lost.");
+      }
+      function winGame() {
+        stopGame();
+        // alert("Congrats, you won!");
+        setTimeout(alert, clueHoldTime, "Congrats, you won!");
+
+      }
+      
+      function guess(userGuess){
+        console.log("user guessed: " + userGuess);
+        if(!gamePlaying){
+          return;
+        }
+
+        // check if guess is correct
+        var correctBtn = pattern[guessCounter];
+
+        // incorrect guess
+        if (correctBtn !== userGuess) {
+          loseGame();
+        }
+
+        // user correctly guessed
+
+        // not done playing all clues
+        else if (guessCounter !== progress) {
+          guessCounter++;
+        }
+
+        // repeated all clues given 
+        else if (guessCounter === progress){
+          // no more clues left in pattern
+          if (progress === pattern.length - 1) {
+                winGame();
+          }
+
+          // more clues yet to be given, play next clue sequence
+          progress++;
+          setTimeout(playClueSequence, 1000); // wait before playing next clue sequence
+        } 
+
+      }
+    </script>
+    
+    
+  </head>
+  <body>
+    
+
+    <a href="index.html">see basic version</a>
+    
+    <h1>Melody Memory</h1>
+
+    <p>
+      Welcome to the game. Repeat back the pattern by pressing buttons. <br>
+      Piano sound from <a href="https://github.com/keithwhor/audiosynth"> source</a>
+    </p>
+    
+    <button id="startBtn" onclick="startGame()">
+      Start
+    </button>
+    <button id="stopBtn" onclick="stopGame()" class="hidden">
+      Stop
+    </button>
+
+    <div id="piano">
+      <button class="whiteKey" id="pitchC" onclick="play('C'); guess('C');" ></button>
+      <button class="blackKey" id="pitchC#" onclick="play('C#');  guess('C#');" ></button>
+      <button class="whiteKey" id="pitchD" onclick="play('D'); guess('D');" ></button>
+      <button class="blackKey" id="pitchD#" onclick="play('D#'); guess('D#');" ></button>
+      <button class="whiteKey" id="pitchE" onclick="play('E'); guess('E');" ></button>
+      <button class="whiteKey" id="pitchF" onclick="play('F'); ; guess('F');" ></button>
+      <button class="blackKey" id="pitchF#" onclick="play('F#'); guess('F#');" ></button>
+      <button class="whiteKey" id="pitchG" onclick="play('G'); guess('G');" ></button>
+      <button class="blackKey" id="pitchG#" onclick="play('G#'); guess('G#');" ></button>
+      <button class="whiteKey" id="pitchA" onclick="play('A'); guess('A');" ></button>
+      <button class="blackKey" id="pitchA#" onclick="play('A#'); ; guess('A#');" ></button>
+      <button class="whiteKey" id="pitchB" onclick="play('B'); ; guess('B');" ></button>
+    </div>
+    
+    <script src="https://button.glitch.me/button.js" defer></script>
+    
+    
+  </body>
+</html>
